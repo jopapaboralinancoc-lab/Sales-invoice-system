@@ -1,0 +1,75 @@
+mport datetime
+
+users = {
+    "cashier": "harongwapo",
+    "owner": "boss123"
+}
+
+sales_file = "daily_sales.txt"
+
+print("================= WELCOME =================")
+print(" SALES INVOICE SYSTEM")
+print("======== SMILE TO THE CUSTOMER ============")
+
+#log en
+username = input("Enter username: ").strip()
+password = input("Enter password: ").strip()
+
+if username in users and users[username] == password:
+    print(f"\nWelcome, {username.upper()}!\n")
+else:
+    print("\nInvalid username or password. Access denied.")
+    exit()
+
+# OWNER 
+if username == "owner":
+    print("OWNER MENU:")
+    print("1. View Daily Transactions")
+    print("2. Exit")
+    choice = input("Choose option: ")
+
+    if choice == "1":
+        print("\n===== DAILY TRANSACTIONS =====")
+        try:
+            with open(sales_file, "r", encoding="utf-8") as f:
+                content = f.read().strip()
+        except FileNotFoundError:
+            print("No transaction file found yet.")
+        else:
+            if content:
+                print(content)
+            else:
+                print("No transactions recorded today.")
+    print("=================================")
+    print("\nGoodbye, Owner!")
+    exit()
+    
+# CASHIER 
+products = []
+total = 0.0
+
+while True:
+    name = input("Enter product name (or type 'done' to finish): ").strip()
+    if name.lower() == "done":
+        break
+
+    try:
+        qty = int(input("Enter quantity: "))
+        price = float(input("Enter price per item: "))
+    except ValueError:
+        print("Invalid input. Try again.")
+        continue
+
+    subtotal = qty * price
+    total += subtotal
+    products.append((name, qty, price, subtotal))
+    print(f"Added: {name} (₱{price:.2f} x {qty}) = ₱{subtotal:.2f}\n")
+
+# para sa invoice
+print("\n========================================")
+print(" SALES INVOICE")
+print("----------------------------------------")
+for item in products:
+    print(f"{item[0]} x{item[1]} @₱{item[2]:.2f} = ₱{item[3]:.2f}")
+print("========================================")
+print(f"TOTAL AMOUNT: ₱{total:.2f}")
